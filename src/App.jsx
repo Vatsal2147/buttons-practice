@@ -1,53 +1,54 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
 function App() {
-  const [color, setColor] = useState("bg-white");
-  const [isDisabled, setisDisabled] = useState(false)
-  const [active, setActive] = useState("Submit")
-  const [toggled, setToggled] = useState(false);
+  const [buttoncolor, setbuttoncolor] = useState("bg-white")
+  const [disabled, setDisabled] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const buttonColor = {
+    idle: "bg-white",
+    loading: "bg-blue-500",
+    success: "bg-green-500",
+    error: "bg-red-500",
+  };
 
-  const handleClick = async () => {
-    setisDisabled(true);
-    setActive("Loading...");
-
+  async function handleClick() {
+    setStatus("loading");
     try {
-        const response = await fetch(
-            "https://jsonplaceholder.typicode.com/todos/1"
-        );
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/todos/1",
+      );
 
-        if (!response.ok) {
-            throw new Error("Request failed");
-        }
+      if (!response.ok) {
+        throw new Error();
+      }
 
-        setActive("Success!");
-        setColor("bg-green-500")
-    } catch (error) {
-        setActive("Error!");
-        setColor("bg-red-500")
-    } finally {
-        setisDisabled(false);
+      setStatus("success");
+    } catch {
+      setStatus("error");
     }
-};
-
+  }
+  async function handleClicks() {
+    setbuttoncolor("bg-red-500");
+  }
   return (
-    <div className='flex items-center justify-center h-screen bg-black'>
-    <button
-    className= {`toggle-btn h-[28px] w-[50px]  rounded-full ${toggled?'toggled':''}`}
-    onClick={()=>setToggled(!toggled)}>
-      
-      <div className='thumb'></div>
-    </button>
+    <div className="flex items-center justify-center h-screen bg-black">
+      <button
+        disabled={status == "loading"}
+        className={`full-btn ${buttonColor[status]}`}
+        onClick={handleClick}
+      >
+        {status}
+      </button>
 
-
-    <button
-    disabled={isDisabled}
-  className={`full-btn ${color}`}
-    onClick={handleClick}
->
-    {active}
-</button>
+      <button
+        disabled={status == "loading"}
+        className={`full-btn ${buttoncolor}`}
+        onClick={handleClicks}
+      >
+        Error
+      </button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
